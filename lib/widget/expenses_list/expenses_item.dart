@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:expense_tracker/model/expense.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +23,7 @@ class ExpensesItems extends StatelessWidget {
                 Spacer(),
                 Row(
                   children: [
-                    Icon(Icons.calendar_today, size: 16),
+                    Icon(categoryIcons[expenses.category]),
                     SizedBox(width: 8),
                     Text(
                       '${expenses.date.day.toString().padLeft(2, '0')}/${expenses.date.month.toString().padLeft(2, '0')}/${expenses.date.year}',

@@ -1,15 +1,18 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 final _uuid = const Uuid();
 
+final formatter = DateFormat.yMd();
+
 enum Category { food, travel, leisure, work, other }
 
-const categoryIcons = {
-  Category.food: '🍔',
-  Category.travel: '✈️',
-  Category.leisure: '🎮',
-  Category.work: '💼',
-  Category.other: '🛍️',
+Map<Category, IconData> categoryIcons = {
+  Category.food: Icons.fastfood,
+  Category.travel: Icons.flight,
+  Category.work: Icons.work,
+  Category.leisure: Icons.movie,
 };
 
 extension CategoryLabel on Category {
@@ -29,4 +32,8 @@ class ExpenseModel {
   final double amount;
   final DateTime date;
   final Category category;
+
+  String get formattedDate {
+    return formatter.format(date);
+  }
 }
