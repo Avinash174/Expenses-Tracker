@@ -8,6 +8,31 @@ class ExpensesItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(child: Text(expenses.title));
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        child: Column(
+          children: [
+            Text(expenses.title),
+            SizedBox(height: 4),
+            Row(
+              children: [
+                Text('\$${expenses.amount.toStringAsFixed(2)}'),
+                Spacer(),
+                Row(
+                  children: [
+                    Icon(Icons.calendar_today, size: 16),
+                    SizedBox(width: 8),
+                    Text(
+                      '${expenses.date.day.toString().padLeft(2, '0')}/${expenses.date.month.toString().padLeft(2, '0')}/${expenses.date.year}',
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

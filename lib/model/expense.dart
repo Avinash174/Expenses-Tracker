@@ -4,6 +4,14 @@ final _uuid = const Uuid();
 
 enum Category { food, travel, leisure, work, other }
 
+const categoryIcons = {
+  Category.food: '🍔',
+  Category.travel: '✈️',
+  Category.leisure: '🎮',
+  Category.work: '💼',
+  Category.other: '🛍️',
+};
+
 extension CategoryLabel on Category {
   String get label => name[0].toUpperCase() + name.substring(1);
 }
