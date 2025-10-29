@@ -41,22 +41,19 @@ class _NewExpensesState extends State<NewExpenses> {
   }
 
   void _saveExpense() {
-    // Validate the form (runs all validators)
-    final form = _formKey.currentState;
-    if (form == null) return;
+    final enteredTitle = _titleController.text.trim();
+    final enteredAmount = double.tryParse(_amountController.text) ?? 0.0;
 
-    if (!form.validate()) {
-      // If invalid, show a SnackBar as extra feedback (optional)
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    if (enteredTitle.isEmpty ||
+        enteredAmount <= 0 ||
+        _selectedDate == null ||
+        _selectedCategory == null) {
+      ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fix the errors in the form.')),
+        const SnackBar(content: Text('Please complete all fields.')),
       );
       return;
     }
-
-    // If valid, create the model and pop
-    final enteredTitle = _titleController.text.trim();
-    final enteredAmount = double.parse(_amountController.text.trim());
 
     final newExpense = ExpenseModel(
       title: enteredTitle,
@@ -65,7 +62,15 @@ class _NewExpensesState extends State<NewExpenses> {
       category: _selectedCategory!,
     );
 
-    Navigator.pop(context, newExpense);
+    // Safety checks before popping:
+    if (!mounted) return;
+
+    // Option A (recommended): schedule the pop after this frame to avoid navigator-lock issues
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      // maybePop will return false if there's no route to pop (and won't throw)
+      Navigator.of(context).maybePop(newExpense);
+    });
   }
 
   @override
@@ -85,7 +90,7 @@ class _NewExpensesState extends State<NewExpenses> {
       padding: EdgeInsets.only(
         left: 16,
         right: 16,
-        top: 16,
+        top: 48,
         bottom: MediaQuery.of(context).viewInsets.bottom + 16,
       ),
       child: Form(

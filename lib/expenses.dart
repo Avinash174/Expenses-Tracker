@@ -1,7 +1,8 @@
+// lib/expenses.dart
+import 'package:flutter/material.dart';
 import 'package:expense_tracker/new_expenses.dart';
 import 'package:expense_tracker/widget/expenses_list/expenses_list.dart';
-import 'package:expense_tracker/model/expense.dart'; // ✅ No more 'hide Category'
-import 'package:flutter/material.dart';
+import 'package:expense_tracker/model/expense.dart';
 
 class Expenses extends StatefulWidget {
   const Expenses({super.key});
@@ -16,22 +17,27 @@ class _ExpensesState extends State<Expenses> {
       title: 'Flutter Course',
       amount: 19.99,
       date: DateTime.now(),
-      category: Category.work, // ✅ Works fine now
+      category: Category.work,
     ),
     ExpenseModel(
       title: 'Cinema',
       amount: 15.69,
       date: DateTime.now(),
-      category: Category.leisure, // ✅ Works fine now
+      category: Category.leisure,
     ),
   ];
 
-  void _openAddExpensesOverlay() async {
+  Future<void> _openAddExpensesOverlay() async {
+    // Open sheet and await returned ExpenseModel (or null if cancelled)
     final newExpense = await showModalBottomSheet<ExpenseModel>(
       useSafeArea: true,
       isScrollControlled: true,
       context: context,
-      builder: (ctx) => NewExpenses(onAddExpense: (ExpenseModel expense) {  },),
+      builder: (ctx) => NewExpenses(
+        onAddExpense: (expense) {
+          Navigator.of(ctx).pop(expense);
+        },
+      ), // NewExpenses should return value via Navigator.pop(ctx, newExpense)
     );
 
     if (newExpense == null) return;
@@ -41,10 +47,36 @@ class _ExpensesState extends State<Expenses> {
     });
   }
 
-  void _addExpense(ExpenseModel expense) {
+  // Remove by id for safety, and support undo
+  void _removeExpense(ExpenseModel expense) {
+    final removedIndex = registeredExpenses.indexWhere(
+      (e) => e.id == expense.id,
+    );
+    if (removedIndex < 0) return;
+
+    final removedExpense = registeredExpenses[removedIndex];
+
     setState(() {
-      registeredExpenses.add(expense);
+      registeredExpenses.removeAt(
+        removedIndex,
+      ); // immediate removal required by Dismissible
     });
+
+    // show undo snackbar
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Expense deleted'),
+        action: SnackBarAction(
+          label: 'UNDO',
+          onPressed: () {
+            setState(() {
+              registeredExpenses.insert(removedIndex, removedExpense);
+            });
+          },
+        ),
+      ),
+    );
   }
 
   @override
@@ -65,7 +97,13 @@ class _ExpensesState extends State<Expenses> {
             padding: EdgeInsets.all(16.0),
             child: Text('The Chart'),
           ),
-          Expanded(child: ExpensesList(expenses: registeredExpenses)),
+          Expanded(
+            child: ExpensesList(
+              expenses: registeredExpenses,
+              onRemove:
+                  _removeExpense, // ExpensesList will call this when item dismissed
+            ),
+          ),
         ],
       ),
     );
