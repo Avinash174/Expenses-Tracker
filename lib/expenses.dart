@@ -31,13 +31,19 @@ class _ExpensesState extends State<Expenses> {
       useSafeArea: true,
       isScrollControlled: true,
       context: context,
-      builder: (ctx) => const NewExpenses(),
+      builder: (ctx) => NewExpenses(onAddExpense: (ExpenseModel expense) {  },),
     );
 
     if (newExpense == null) return;
 
     setState(() {
       registeredExpenses.add(newExpense);
+    });
+  }
+
+  void _addExpense(ExpenseModel expense) {
+    setState(() {
+      registeredExpenses.add(expense);
     });
   }
 
