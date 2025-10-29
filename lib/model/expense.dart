@@ -1,14 +1,14 @@
+// lib/model/expense.dart
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 final _uuid = const Uuid();
-
 final formatter = DateFormat.yMd();
 
-enum Category { food, travel, leisure, work, other }
+enum Category { food, travel, work, leisure }
 
-Map<Category, IconData> categoryIcons = {
+const Map<Category, IconData> categoryIcons = {
   Category.food: Icons.fastfood,
   Category.travel: Icons.flight,
   Category.work: Icons.work,
@@ -33,7 +33,5 @@ class ExpenseModel {
   final DateTime date;
   final Category category;
 
-  String get formattedDate {
-    return formatter.format(date);
-  }
+  String get formattedDate => formatter.format(date);
 }
