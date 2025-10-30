@@ -27,8 +27,21 @@ class MyApp extends StatelessWidget {
           margin: EdgeInsets.all(12),
         ),
         bottomSheetTheme: BottomSheetThemeData(backgroundColor: Colors.white),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: KColorScheme.primaryContainer,
+            foregroundColor: KColorScheme.onPrimaryContainer,
+          ),
+        ),
+        textTheme: ThemeData().textTheme.copyWith(
+          titleLarge: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            color: KColorScheme.onSecondaryContainer,
+          ),
+        ),
       ),
-      home: const Expenses(),
+      home: Expenses(),
     );
   }
 }
