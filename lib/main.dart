@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/expenses.dart';
+import 'package:flutter/services.dart';
 
 void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.portraitUp,
+  //   DeviceOrientation.portraitDown,
+  // ]).then((_) {
   runApp(MyApp());
+  // });
 }
 
 class MyApp extends StatelessWidget {
